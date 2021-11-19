@@ -1,1 +1,1 @@
- URL_NotesDB=mongodb+srv://cruzrovira:<password>@cluster-proyect-notes.cvizi.mongodb.net/test?retryWrites=true&w=majority
+ MONGO_DB_URI=mongodb+srv://cruzrovira:<password>@cluster-proyect-notes.cvizi.mongodb.net/test?retryWrites=true&w=majority

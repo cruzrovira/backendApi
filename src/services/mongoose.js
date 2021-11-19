@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 mongoose
-  .connect(process.env.URL_NotesDB)
+  .connect(process.env.MONGO_DB_URL)
   .then(() => {
     console.log("MongoDB Connected")
   })
