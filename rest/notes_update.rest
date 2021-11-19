@@ -1,6 +1,6 @@
-PUT  http://localhost:3000/api/notes/1
+PUT  http://localhost:3000/api/notes/619716852158dd6c3dc8a0c6
 Content-Type: application/json
 
 {
-  "content": "New Content"
+  "content": "New Content2"
 }

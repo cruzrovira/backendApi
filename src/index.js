@@ -1,51 +1,40 @@
+require("dotenv").config()
 const express = require("express")
 const app = express()
 app.use(express.json())
+require("./services/mongoose")
 
-let notes = [
-  {
-    id: 1,
-    content: "HTML is easy",
-    date: "2019-05-30T17:30:31.098Z",
-    important: true,
-  },
-  {
-    id: 2,
-    content: "Browser can execute only Javascript",
-    date: "2019-05-30T18:39:34.091Z",
-    important: false,
-  },
-  {
-    id: 3,
-    content: "GET and POST are the most important methods of HTTP protocol",
-    date: "2019-05-30T19:20:14.298Z",
-    important: true,
-  },
-]
+const Note = require("./models/note")
 
 app.get("/", (req, res) => {
   res.send("Hello World")
 })
 
 app.get("/api/notes", (req, res) => {
-  res.json(notes)
+  Note.find({}).then((notes) => {
+    res.json(notes)
+  })
 })
 
 app.get("/api/notes/:id", (req, res) => {
-  const id = Number(req.params.id)
-  const note = notes.find((note) => note.id === id)
-
-  if (note) {
-    res.json(note)
-  } else {
+  const id = req.params.id
+  Note.findById(id).then((note) => {
+    if (note) {
+      res.json(note)
+    }
     res.status(404).send({ error: `Note with id ${id} not found` })
-  }
+  })
 })
 
 app.delete("/api/notes/:id", (req, res) => {
-  const id = Number(req.params.id)
-  notes = notes.filter((note) => note.id !== id)
-  res.status(204).end()
+  const id = req.params.id
+  Note.findByIdAndRemove(id).then((note) => {
+    if (note) {
+      res.status(204).end()
+    } else {
+      res.status(404).send({ error: `Note with id ${id} not found` })
+    }
+  })
 })
 
 app.post("/api/notes", (req, res) => {
@@ -55,35 +44,32 @@ app.post("/api/notes", (req, res) => {
     return res.status(400).json({ error: "content missing" })
   }
 
-  const note = {
+  const note = new Note({
     content: body.content,
     important: body.important || false,
-    date: new Date(),
-    id: notes.length + 1,
-  }
-  notes.push(note)
-  res.json(note)
+  })
+
+  note.save().then((savedNote) => {
+    res.json(savedNote)
+  })
 })
 
 app.put("/api/notes/:id", (req, res) => {
-  const id = Number(req.params.id)
-  const note = notes.find((note) => note.id === id)
-  const index = notes.indexOf(note)
-  console.log(note, index)
+  const id = req.params.id
 
   const { content, important } = req.body
-
-  if (note) {
-    note.content = content
-    note.important = important || false
-    notes[index] = note
-    res.json(note)
-  } else {
-    res.status(404).send({ error: `Note with id ${id} not found` })
+  const note = {
+    content: content,
+    important: important,
   }
+
+  Note.findByIdAndUpdate(id, note, { new: true }).then((updatedNote) => {
+    res.json(updatedNote)
+  })
 })
 
 const port = process.env.PORT || 3000
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`)
 })
