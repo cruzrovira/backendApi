@@ -1,7 +1,17 @@
 const mongoose = require("mongoose")
 
+const MONGO_DB_URL =
+  process.env.NODE_ENV === "production"
+    ? process.env.MONGO_DB_URL_START
+    : process.env.MONGO_DB_URL_DEV
+
 mongoose
-  .connect(process.env.MONGO_DB_URI)
+  .connect(MONGO_DB_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true,
+  })
   .then(() => {
     console.log("MongoDB Connected")
   })

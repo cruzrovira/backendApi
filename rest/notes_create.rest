@@ -2,5 +2,5 @@ post  http://localhost:3000/api/notes
 content-type: application/json
 
 {
-  "content": "My new note content"
+  "content": "My new note content 2"
 }

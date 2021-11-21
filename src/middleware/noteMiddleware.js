@@ -1,10 +1,8 @@
 const noteMiddleware = require("express").Router()
 const Note = require("../models/note")
-const mongose = require("mongoose")
 
 noteMiddleware.get("", (req, res) => {
   Note.find({}).then((notes) => {
-    mongose.connection.close()
     res.json(notes)
   })
 })
@@ -21,8 +19,6 @@ noteMiddleware.get("/:id", async (req, res) => {
     }
   } catch (error) {
     res.status(400).send(error)
-  } finally {
-    mongose.connection.close()
   }
 })
 
@@ -37,8 +33,6 @@ noteMiddleware.delete("/:id", async (req, res) => {
     }
   } catch (error) {
     res.status(400).send(error)
-  } finally {
-    mongose.connection.close()
   }
 })
 
@@ -59,8 +53,6 @@ noteMiddleware.post("", async (req, res) => {
     res.json(savedNote)
   } catch (error) {
     res.status(400).send(error)
-  } finally {
-    mongose.connection.close()
   }
 })
 
@@ -77,8 +69,6 @@ noteMiddleware.put("/:id", async (req, res) => {
     res.json(updatedNote)
   } catch (error) {
     res.status(400).send(error)
-  } finally {
-    mongose.connection.close()
   }
 })
 module.exports = noteMiddleware
